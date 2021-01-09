@@ -5,3 +5,7 @@
         secondaryLayout = findViewById(R.id.secondaryLayout);//通过id获取控件
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(100,100);//声明一个LinearLayout的对象
         secondaryLayout.setLayoutParams(params);//设置给控件
+       3、 dm = new DisplayMetrics();//获取手机分辨率
+           dm = new DisplayMetrics();
+		  getWindowManager().getDefaultDisplay().getMetrics(dm);//获得手机的宽度和高度像素单位为px
+		  String strPM = "手机屏幕分辨率为:" + dm.widthPixels+"* "+dm.heightPixels;
