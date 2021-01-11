@@ -4,7 +4,7 @@
       example:<br>
         >>secondaryLayout = findViewById(R.id.secondaryLayout);//通过id获取控件<br>
         >>LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(100,100);//声明一个LinearLayout的对象<br>
-        secondaryLayout.setLayoutParams(params);//设置给控件<br>
+        >>secondaryLayout.setLayoutParams(params);//设置给控件<br>
        3、获取手机分辨率
        	>>dm = new DisplayMetrics();//获取手机分辨率<br>
         >>dm = new DisplayMetrics();<br>
