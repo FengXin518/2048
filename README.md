@@ -10,3 +10,4 @@
 		  getWindowManager().getDefaultDisplay().getMetrics(dm);//获得手机的宽度和高度像素单位为px
 		  String strPM = "手机屏幕分辨率为:" + dm.widthPixels+"* "+dm.heightPixels;
 	4、Toast.makeText(MyActivity.this, "向下滑", Toast.LENGTH_SHORT).show();
+	5、SharePreferences必须在onCreate函数中声明；
