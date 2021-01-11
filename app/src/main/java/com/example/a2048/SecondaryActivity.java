@@ -1,7 +1,9 @@
 package com.example.a2048;//highest,current 分数
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.SharedPreferences;
 import android.content.pm.LabeledIntent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -33,17 +35,16 @@ public class SecondaryActivity extends AppCompatActivity {//30,28,26,24
     Button[] btn = new Button[2];
     private TextView[][] textView = new TextView[4][4];
     private float mPosX, mPosY, mCurPosX, mCurPosY;
+    private SharedPreferences pref ;
+    private SharedPreferences.Editor editor ;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Init();
-        temp = 200;
-        middle = String.valueOf(temp);
-        shigh = new StringBuffer(middle);
-        highest.setText(shigh);
-        current.setText("4");
-        textBlocks = new TextBlocks(textView);
+        pref = getSharedPreferences("data",MODE_PRIVATE);
+        editor = pref.edit();
+        //textBlocks = new TextBlocks(textView,highest,current,pref,editor,this);
     }
     void Init(){
         int a;

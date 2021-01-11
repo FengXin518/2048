@@ -1,8 +1,11 @@
 package com.example.a2048;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.pm.LabeledIntent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -18,12 +21,27 @@ import android.widget.TextView;
 
 import android.widget.TextView;
 
+import java.util.Date;
 import java.util.Random;
 
 public class TextBlocks extends Activity {
     private TextView[][] textView = new TextView[4][4];
-    TextBlocks(TextView[][] textView){
+    private TextView highest,current;
+    private  int score = 0;
+    private String tran;
+    private SharedPreferences pref;
+    private SharedPreferences.Editor editor;
+    private int high;
+    private MainActivity mainActivity;
+
+    TextBlocks(TextView[][] textView, TextView highest, TextView current, SharedPreferences pref,
+               SharedPreferences.Editor editor,MainActivity mainActivity){
         this.textView = textView;
+        this.highest = highest;
+        this.current = current;
+        this.pref = pref;
+        this.editor = editor;
+        this.mainActivity = mainActivity;
         init();
     }
     void format(){//格式化
@@ -38,8 +56,12 @@ public class TextBlocks extends Activity {
     void init(){//初始化
         for(int i = 0;i < 2;i++)
             ramdongenerate();
+        score = 0;
+        high = pref.getInt("highest",0);
+        current.setText(tran = String.valueOf(score));
+        highest.setText(tran = String.valueOf(high));
     }
-    int intrandom(){
+    int intrandom(){//生成随机数[1,4)
         Random random = new Random();
         return random.nextInt(4);
     }
@@ -49,10 +71,80 @@ public class TextBlocks extends Activity {
         else
             return false;
     }
+    void ramdongenerate(){//数值为2的块随机生成
+        int r,c;
+        while(true) {
+            r = intrandom();
+            c = intrandom();
+            if(judge(r,c)){
+                textView[r][c].setBackgroundResource(R.drawable.data2);
+                textView[r][c].setText("2");
+                textView[r][c].setTextSize(30);
+                break;
+            }
+        }
+        nextJudge();
+    }
+    void nextJudge(){
+        int blockCount = 0;
+        int piece = 0;
+        for(int i = 0;i < 4 ;i++)
+            for(int j = 0;j <4;j++)
+                if(!textView[i][j].getText().toString().equals(""))
+                    blockCount++;
+        if(blockCount == 16){
+            blockCount = 0;
+            for(int i = 0;i < 4 ;i++)
+                for(int j = 0;j <4;j++){
+                    piece = 0;
+                    if(i-1>=0){
+                        if(!textView[i][j].getText().toString().equals(textView[i-1][j].getText().toString()))
+                            piece++;
+                    }else
+                        piece++;
+                    if(i+1<=3){
+                        if(!textView[i][j].getText().toString().equals(textView[i+1][j].getText().toString()))
+                            piece++;
+                    }else
+                        piece++;
+                    if(j-1>=0){
+                        if(!textView[i][j].getText().toString().equals(textView[i][j-1].getText().toString()))
+                            piece++;
+                    }else
+                        piece++;
+                    if(j+1<=3){
+                        if(!textView[i][j].getText().toString().equals(textView[i][j+1].getText().toString()))
+                            piece++;
+                    }else
+                        piece++;
+                    if(piece == 4)
+                        blockCount++;
+                }
+            if(blockCount == 16){
+                AlertDialog.Builder dialog = new AlertDialog.Builder(mainActivity);
+                dialog.setTitle("菜鸡，你输了！");
+                dialog.setCancelable(false);
+                dialog.setPositiveButton("算了，菜鸡就菜鸡", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                });
+                dialog.setNegativeButton("再来！", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        format();
+                    }
+                });
+                dialog.show();
+            }
+        }
+    }
     void slideDown(){
         int count = 0,num;
         int[][] data = new int[2][2];
         boolean[] flag = new boolean[4];
+        boolean flagjudge = false;//判断是否有方块发生移动
         for(int i = 0;i < 4;i++){
             count = 0;
             flag[0] = true;
@@ -95,14 +187,24 @@ public class TextBlocks extends Activity {
                     }
                 }
             for(int l = 0;l < count;l++){
+                flagjudge = true;
                 num = Integer.parseInt(textView[data[l][0]][i].getText().toString()) * 2;
                 change(data[l][1],i,num);
                 change(data[l][0],i,0);
+                score += num;
+                current.setText(tran = String.valueOf(score));
+                if(score > high){
+                    high = score;
+                    editor.putInt("highest",high);
+                    highest.setText(tran = String.valueOf(high));
+                    editor.apply();
+                }
             }
             for(int l = 3;l > 0;l--){
                 if(textView[l][i].getText().toString().equals("")){
                     for(int m = l - 1;m >= 0 ;m--){
                         if(!textView[m][i].getText().toString().equals("")){
+                            flagjudge = true;
                             num = Integer.parseInt(textView[m][i].getText().toString());
                             change(l,i,num);
                             change(m,i,0);
@@ -112,12 +214,14 @@ public class TextBlocks extends Activity {
                 }
             }
         }
-
+        if(flagjudge)
+            ramdongenerate();
     }
     void slideUp(){
         int count = 0,num;
         int[][] data = new int[2][2];
         boolean[] flag = new boolean[4];
+        boolean flagjudge = false;//判断是否有方块发生移动
         for(int i = 0;i < 4;i++){
             count = 0;
             flag[0] = true;
@@ -160,9 +264,18 @@ public class TextBlocks extends Activity {
                     }
                 }
             for(int l = 0;l < count;l++){
+                flagjudge = true;
                 num = Integer.parseInt(textView[data[l][0]][i].getText().toString()) * 2;
                 change(data[l][1],i,num);
                 change(data[l][0],i,0);
+                score += num;
+                current.setText(tran = String.valueOf(score));
+                if(score > high){
+                    high = score;
+                    editor.putInt("highest",high);
+                    highest.setText(tran = String.valueOf(high));
+                    editor.apply();
+                }
             }
             for(int l = 0;l < 3;l++){
                 if(textView[l][i].getText().toString().equals("")){
@@ -171,17 +284,21 @@ public class TextBlocks extends Activity {
                             num = Integer.parseInt(textView[m][i].getText().toString());
                             change(l,i,num);
                             change(m,i,0);
+                            flagjudge = true;
                             break;
                         }
                     }
                 }
             }
         }
+        if(flagjudge)
+            ramdongenerate();
     }
     void slideRight(){
         int count = 0,num;
         int[][] data = new int[2][2];
         boolean[] flag = new boolean[4];
+        boolean flagjudge = false;//判断是否有方块发生移动
         for(int i = 0;i < 4;i++){
             count = 0;
             flag[0] = true;
@@ -224,15 +341,24 @@ public class TextBlocks extends Activity {
                     }
                 }
             for(int l = 0;l < count;l++){
-                System.out.println(" data0："+data[l][0]+" data1："+data[l][0]+" count:"+count);
+                flagjudge = true;
                 num = Integer.parseInt(textView[i][data[l][0]].getText().toString()) * 2;
                 change(i,data[l][1],num);
                 change(i,data[l][0],0);
+                score += num;
+                current.setText(tran = String.valueOf(score));
+                if(score > high){
+                    high = score;
+                    editor.putInt("highest",high);
+                    highest.setText(tran = String.valueOf(high));
+                    editor.apply();
+                }
             }
             for(int l = 3;l > 0;l--){
                 if(textView[i][l].getText().toString().equals("")){
                     for(int m = l - 1;m >= 0;m--){
                         if(!textView[i][m].getText().toString().equals("")){
+                            flagjudge = true;
                             num = Integer.parseInt(textView[i][m].getText().toString());
                             change(i,l,num);
                             change(i,m,0);
@@ -242,12 +368,14 @@ public class TextBlocks extends Activity {
                 }
             }
         }
-
+        if(flagjudge)
+            ramdongenerate();
     }
     void slideLeft(){
         int count = 0,num;
         int[][] data = new int[2][2];
         boolean[] flag = new boolean[4];
+        boolean flagjudge = false;//判断是否有方块发生移动
         for(int i = 0;i < 4;i++){
             count = 0;
             flag[0] = true;
@@ -290,14 +418,24 @@ public class TextBlocks extends Activity {
                     }
                 }
             for(int l = 0;l < count;l++){
+                flagjudge = true;
                 num = Integer.parseInt(textView[i][data[l][0]].getText().toString()) * 2;
                 change(i,data[l][1],num);
                 change(i,data[l][0],0);
+                score += num;
+                current.setText(tran = String.valueOf(score));
+                if(score > high){
+                    high = score;
+                    editor.putInt("highest",high);
+                    highest.setText(tran = String.valueOf(high));
+                    editor.apply();
+                }
             }
             for(int l = 0;l < 3;l++){
                 if(textView[i][l].getText().toString().equals("")){
                     for(int m = l + 1;m <= 3;m++){
                         if(!textView[i][m].getText().toString().equals("")){
+                            flagjudge = true;
                             num = Integer.parseInt(textView[i][m].getText().toString());
                             change(i,l,num);
                             change(i,m,0);
@@ -307,19 +445,8 @@ public class TextBlocks extends Activity {
                 }
             }
         }
-    }
-    void ramdongenerate(){//数值为2的块随机生成
-        int r,c;
-        while(true) {
-            r = intrandom();
-            c = intrandom();
-            if(judge(r,c)){
-                textView[r][c].setBackgroundResource(R.drawable.data2);
-                textView[r][c].setText("2");
-                textView[r][c].setTextSize(30);
-                break;
-            }
-        }
+        if(flagjudge)
+            ramdongenerate();
     }
     void change(int row,int column,int data){
         switch(data){
@@ -386,6 +513,11 @@ public class TextBlocks extends Activity {
             case 4096:
                 textView[row][column].setBackgroundResource(R.drawable.data4096);
                 textView[row][column].setText("4096");
+                textView[row][column].setTextSize(24);
+                break;
+            case 8192:
+                textView[row][column].setBackgroundResource(R.drawable.data8192);
+                textView[row][column].setText("8192");
                 textView[row][column].setTextSize(24);
                 break;
             default:break;
