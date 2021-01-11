@@ -3,6 +3,7 @@ package com.example.a2048;//highest,current 分数
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.LabeledIntent;
 import android.graphics.Color;
@@ -24,27 +25,22 @@ public class SecondaryActivity extends AppCompatActivity {//30,28,26,24
     private GridLayout secondaryLayout;
     private TextView highest;
     private TextView current;
-    private StringBuffer shigh;
-    private StringBuffer scurrent;
-    private int temp;
-    private String middle;
     private DisplayMetrics dm;
-    private LabeledIntent ds;
-    private Shape d2;
     private TextBlocks textBlocks;
     Button[] btn = new Button[2];
     private TextView[][] textView = new TextView[4][4];
     private float mPosX, mPosY, mCurPosX, mCurPosY;
     private SharedPreferences pref ;
     private SharedPreferences.Editor editor ;
+    boolean move = false;//判断手势是否移动
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.secondarylayout);
         Init();
         pref = getSharedPreferences("data",MODE_PRIVATE);
         editor = pref.edit();
-        //textBlocks = new TextBlocks(textView,highest,current,pref,editor,this);
+        textBlocks = new TextBlocks(textView,highest,current,pref,editor,this);
     }
     void Init(){
         int a;
@@ -79,7 +75,22 @@ public class SecondaryActivity extends AppCompatActivity {//30,28,26,24
         textView[3][3] = findViewById(R.id.b15);
         btn[1].setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-                finish();
+                AlertDialog.Builder dialog = new AlertDialog.Builder(SecondaryActivity.this);
+                dialog.setTitle("退出游戏");
+                dialog.setCancelable(false);
+                dialog.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                });
+                dialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+                dialog.show();
             }
         });
         btn[0].setOnClickListener(new View.OnClickListener(){
@@ -98,32 +109,33 @@ public class SecondaryActivity extends AppCompatActivity {//30,28,26,24
                     case MotionEvent.ACTION_MOVE:
                         mCurPosX = event.getX();
                         mCurPosY = event.getY();
+                        move = true;
                         break;
                     case MotionEvent.ACTION_UP:
-                        if (Math.abs(mCurPosY - mPosY) > Math.abs(mCurPosX  - mPosX)) {
-                            //向下滑动
-                            if(mCurPosY > mPosY){
-                                textBlocks.slideDown();
-                                textBlocks.ramdongenerate();
+                        if(move){
+                            if (Math.abs(mCurPosY - mPosY) > Math.abs(mCurPosX  - mPosX)) {
+                                if(Math.abs(mCurPosY-mPosY)>100){
+                                    //向下滑动
+                                    if((mCurPosY > mPosY))
+                                        textBlocks.slideDown();
+                                        //向上滑动
+                                    else
+                                        textBlocks.slideUp();
+                                }
+                            } else if (Math.abs(mCurPosY - mPosY) < Math.abs(mCurPosX  - mPosX)) {
+                                if(Math.abs(mCurPosX  - mPosX)>100){
+                                    //向右滑动
+                                    if((mCurPosX > mPosX))
+                                        textBlocks.slideRight();
+                                        //向左滑动
+                                    else if((mCurPosX < mPosX))
+                                        textBlocks.slideLeft();
+                                }
                             }
-                            //向上滑动
-                            else{
-                                textBlocks.slideUp();
-                                textBlocks.ramdongenerate();
-                            }
-                        } else if (Math.abs(mCurPosY - mPosY) < Math.abs(mCurPosX  - mPosX)) {
-                            //向右滑动
-                            if(mCurPosX > mPosX){
-                                textBlocks.slideRight();
-                                textBlocks.ramdongenerate();
-                            }
-                            //向左滑动
-                            else{
-                                textBlocks.slideLeft();
-                                textBlocks.ramdongenerate();
-                            }
+                            move = false;
                         }
                         break;
+                    default:break;
                 }
                 return true;
             }

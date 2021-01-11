@@ -51,7 +51,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:text="256"
                     android:gravity="center|left"
                     android:textSize="20dp"
                     android:id="@+id/highest"/>
@@ -59,7 +58,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:text="8"
                     android:gravity="center|left"
                     android:textSize="20dp"
                     android:id="@+id/current"/>
