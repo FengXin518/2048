@@ -11,3 +11,4 @@
 		  String strPM = "手机屏幕分辨率为:" + dm.widthPixels+"* "+dm.heightPixels;
 	4、Toast.makeText(MyActivity.this, "向下滑", Toast.LENGTH_SHORT).show();
 	5、SharePreferences必须在onCreate函数中声明；
+	6、一像素=0.04cm
