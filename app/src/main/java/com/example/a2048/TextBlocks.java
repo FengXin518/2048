@@ -130,7 +130,7 @@ public class TextBlocks extends Activity {
                 dialog.setPositiveButton("算了，菜鸡就菜鸡", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        finish();
+                        secondaryActivity.finish();
                     }
                 });
                 dialog.setNegativeButton("再来！", new DialogInterface.OnClickListener() {
@@ -151,7 +151,7 @@ public class TextBlocks extends Activity {
             dialog.setPositiveButton("不玩了，没意思！", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    finish();
+                    secondaryActivity.finish();
                 }
             });
             dialog.setNegativeButton("还有？", new DialogInterface.OnClickListener() {
@@ -200,20 +200,20 @@ public class TextBlocks extends Activity {
             flag[1] = true;
             flag[2] = true;
             flag[3] = true;
-            for(int j = 0;j <= 3;j++)
-                for(int k = j + 1;k <= 3;k++){
+            for(int j = 3;j >= 1;j--)
+                for(int k = j - 1;k >= 0;k--){
                     if(textView[j][i].getText().toString().equals(textView[k][i].getText().toString())&&
                             (!textView[j][i].getText().toString().equals(""))){
-                        if(k - j == 1){
+                        if(j - k == 1){
                             if(flag[k]&&flag[j]){
                                 flag[k] = false;
                                 flag[j] = false;
-                                data[count][0] = j;
-                                data[count][1] = k;
+                                data[count][1] = j;
+                                data[count][0] = k;
                                 count++;
                             }
-                        } else if(k - j == 2){
-                            if(textView[k - 1][i].getText().toString().equals("")) {
+                        } else if(j - k == 2){
+                            if(textView[j - 1][i].getText().toString().equals("")) {
                                 if(flag[k]&&flag[j]){
                                     flag[k] = false;
                                     flag[j] = false;
@@ -222,8 +222,8 @@ public class TextBlocks extends Activity {
                                     count++;
                                 }
                             }
-                        }else if(k - j== 3){
-                            if(textView[k - 1][i].getText().toString().equals("")&&textView[k - 2][i].getText().toString().equals("")) {
+                        }else if(j - k == 3){
+                            if(textView[j - 1][i].getText().toString().equals("")&&textView[j - 2][i].getText().toString().equals("")) {
                                 if(flag[k]&&flag[j]){
                                     flag[k] = false;
                                     flag[j] = false;
@@ -238,8 +238,8 @@ public class TextBlocks extends Activity {
             for(int l = 0;l < count;l++){
                 flagjudge = true;
                 num = Integer.parseInt(textView[data[l][0]][i].getText().toString()) * 2;
-                change(data[l][1],i,num);
-                change(data[l][0],i,0);
+                change(data[l][0],i,num);
+                change(data[l][1],i,0);
                 maxBlockDataJudge(num);
                 score += num;
                 current.setText(tran = String.valueOf(score));
@@ -278,11 +278,11 @@ public class TextBlocks extends Activity {
             flag[1] = true;
             flag[2] = true;
             flag[3] = true;
-            for(int j = 3;j >= 0;j--)
-                for(int k = j - 1;k >= 0;k--){
+            for(int j = 0;j <= 2;j++)
+                for(int k = j + 1;k <= 3;k++){
                     if(textView[j][i].getText().toString().equals(textView[k][i].getText().toString())&&
                             (!textView[j][i].getText().toString().equals(""))){
-                        if(j - k == 1){
+                        if(k - j == 1){
                             if(flag[k]&&flag[j]){
                                 flag[k] = false;
                                 flag[j] = false;
@@ -290,8 +290,8 @@ public class TextBlocks extends Activity {
                                 data[count][1] = k;
                                 count++;
                             }
-                        } else if(j - k == 2){
-                            if(textView[k + 1][i].getText().toString().equals("")) {
+                        } else if(k - j == 2){
+                            if(textView[j + 1][i].getText().toString().equals("")) {
                                 if(flag[k]&&flag[j]){
                                     flag[k] = false;
                                     flag[j] = false;
@@ -300,8 +300,8 @@ public class TextBlocks extends Activity {
                                     count++;
                                 }
                             }
-                        }else if(j - k== 3){
-                            if(textView[k + 1][i].getText().toString().equals("")&&textView[k+2][i].getText().toString().equals("")) {
+                        }else if(k - j == 3){
+                            if(textView[j + 1][i].getText().toString().equals("")&&textView[j+2][i].getText().toString().equals("")) {
                                 if(flag[k]&&flag[j]){
                                     flag[k] = false;
                                     flag[j] = false;
@@ -356,11 +356,11 @@ public class TextBlocks extends Activity {
             flag[1] = true;
             flag[2] = true;
             flag[3] = true;
-            for(int j = 0;j <= 3;j++)
-                for(int k = j + 1;k <= 3;k++){
+            for(int j = 3;j >= 1;j--)
+                for(int k = j - 1;k >= 0;k--){
                     if(textView[i][j].getText().toString().equals(textView[i][k].getText().toString())&&
                             (!textView[i][j].getText().toString().equals(""))){
-                        if(k - j == 1){
+                        if(j - k == 1){
                             if(flag[k]&&flag[j]){
                                 flag[k] = false;
                                 flag[j] = false;
@@ -368,8 +368,8 @@ public class TextBlocks extends Activity {
                                 data[count][1] = k;
                                 count++;
                             }
-                        } else if(k - j  == 2){
-                            if(textView[i][k - 1].getText().toString().equals("")) {
+                        } else if(j - k  == 2){
+                            if(textView[i][j - 1].getText().toString().equals("")) {
                                 if(flag[k]&&flag[j]){
                                     flag[k] = false;
                                     flag[j] = false;
@@ -378,8 +378,8 @@ public class TextBlocks extends Activity {
                                     count++;
                                 }
                             }
-                        }else if(k - j  == 3){
-                            if(textView[i][k - 1].getText().toString().equals("")&&textView[i][k - 2].getText().toString().equals("")) {
+                        }else if(j - k  == 3){
+                            if(textView[i][j - 1].getText().toString().equals("")&&textView[i][j - 2].getText().toString().equals("")) {
                                 if(flag[k]&&flag[j]){
                                     flag[k] = false;
                                     flag[j] = false;
@@ -434,11 +434,11 @@ public class TextBlocks extends Activity {
             flag[1] = true;
             flag[2] = true;
             flag[3] = true;
-            for(int j = 3;j >= 0;j--)
-                for(int k = j - 1;k >= 0;k--){
+            for(int j = 0;j <= 2;j++)
+                for(int k = j + 1;k <= 3;k++){
                     if(textView[i][j].getText().toString().equals(textView[i][k].getText().toString())&&
                             (!textView[i][j].getText().toString().equals(""))){
-                        if(j - k == 1){
+                        if(k - j == 1){
                             if(flag[k]&&flag[j]){
                                 flag[k] = false;
                                 flag[j] = false;
@@ -446,8 +446,8 @@ public class TextBlocks extends Activity {
                                 data[count][1] = k;
                                 count++;
                             }
-                        } else if(j - k== 2){
-                            if(textView[i][j - 1].getText().toString().equals("")) {
+                        } else if(k - j== 2){
+                            if(textView[i][k - 1].getText().toString().equals("")) {
                                 if(flag[k]&&flag[j]){
                                     flag[k] = false;
                                     flag[j] = false;
@@ -456,8 +456,8 @@ public class TextBlocks extends Activity {
                                     count++;
                                 }
                             }
-                        }else if(j - k == 3){
-                            if(textView[i][j - 1].getText().toString().equals("")&&textView[i][j - 2].getText().toString().equals("")) {
+                        }else if(k - j == 3){
+                            if(textView[i][k - 1].getText().toString().equals("")&&textView[i][k - 2].getText().toString().equals("")) {
                                 if(flag[k]&&flag[j]){
                                     flag[k] = false;
                                     flag[j] = false;
