@@ -1,4 +1,4 @@
-#2048
+#2048 2021/1/12
 <br>笔记：1、使用layout_weight时，layout_weight或layout_height值置位0dp。<br>
       2、每个组件都有自己的LayoutParams,通过它来设置控件的height与width。<br>
       example:<br>
