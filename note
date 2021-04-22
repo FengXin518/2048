@@ -1,0 +1,4 @@
+当按钮无法使用shape改变颜色时：
+res/values/themes.xml下的
+<style name="Theme.HelloWorld" parent="Theme.MaterialComponents.DayNight.DarkActionBar">改为
+<style name="Theme.HelloWorld" parent="Theme.MaterialComponents.DayNight.DarkActionBar.Bridge">
